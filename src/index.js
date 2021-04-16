@@ -18,6 +18,7 @@ const nanoid = customAlphabet("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLM
  * @prop {*} mergeMessage If a function is given, it will be called as `async function(commitManager, pullNumber)`
  * @prop {*} pullRequestTitle If a function is given, it will be called as `async function(commitManager)`
  * @prop {*} pullRequestBody If a function is given, it will be called as `async function(commitManager)`
+ * @prop {*} branch If a function is given, it will be called as `async function(commitManager)`
  * @prop {*} branchPrefix If a function is given, it will be called as `async function(commitManager)`
  * @prop {boolean|string} autoApprove
  * @prop {boolean|string} autoRemoveBranch
@@ -100,7 +101,7 @@ export default class CommitManager {
     }
     const branchId = nanoid()
     const branchPrefix = await resolveAny(this.options.branchPrefix, this)
-    this.branch = `${branchPrefix}${branchId}`
+    this.branch = this.options.branch || `${branchPrefix}${branchId}`
     await exec("git", ["config", "user.email", "action@github.com"])
     await exec("git", ["config", "user.name", "GitHub Action"])
     await exec("git", ["checkout", "-b", this.branch])
